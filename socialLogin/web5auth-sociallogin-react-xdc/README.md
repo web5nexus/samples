@@ -1,6 +1,6 @@
-# Biconomy SDK Demo
+# Web5 Auth SDK Demo
 
-Example codes for integrating biconomy sdk in your repo.
+Example codes for integrating web5auth sdk in your repo.
 
 #### Run locally
 
