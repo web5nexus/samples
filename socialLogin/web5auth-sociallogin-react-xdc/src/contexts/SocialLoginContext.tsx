@@ -1,8 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
-import SocialLogin from "@web5nexus/sociallogin";
-import EvmRpc from "@web5nexus/sociallogin/dist/src/config/evm";
-
+import SocialLogin,{EvmRpc} from "@web5nexus/sociallogin";
+import {BlockchainType,NetworkOption,Web3AuthParamsType} from "@web5nexus/coretypes";
 
 interface web3AuthContextType {
   connect: () => Promise<SocialLogin | null | undefined>;
@@ -59,6 +58,7 @@ const clientId = "BJ2nx05HJkS2V_E-WtRliS3XaGvsTtWjBD_jNWeI30B15Rb9ienN-pcL0CiTN5
 const clientSecret = "72122785a8c9e30a4139d4e62da926cb1e4e18bb106a31ec1df40361d837a8f7";
 const name = "XDC Auth"
 const logo = "https://xinfin.org/assets/images/brand-assets/xdc-icon.png"
+const network :NetworkOption = "sapphire_mainnet";
 
 export const Web3AuthProvider = ({ children }: any) => {
   const [web3State, setWeb3State] = useState<StateType>(initialState);
@@ -90,7 +90,11 @@ export const Web3AuthProvider = ({ children }: any) => {
         const web3Provider = new ethers.providers.Web3Provider(
           socialLoginSDK.provider
         );
-        const xdcInstance = new EvmRpc(socialLoginSDK.provider,"xinfin", "xdc")
+        const blockchain:BlockchainType ={
+          blockchain:"binance",
+          network:"mainnet"
+        }
+        const xdcInstance = new EvmRpc(socialLoginSDK.provider,blockchain)
         const address = await xdcInstance.getAccounts();
         const chainId = await xdcInstance.getChainId();
         const wallet = await xdcInstance.getWalletInstance();
@@ -112,8 +116,17 @@ export const Web3AuthProvider = ({ children }: any) => {
         return socialLoginSDK;
       }
       setLoading(true);
-      const sdk = new SocialLogin(clientId, clientSecret, name, logo);
-      await sdk.init();
+      const whiteLabel = {
+        name :name,
+        logo :logo
+      }
+      const params: Web3AuthParamsType={
+        type: "web3auth",
+        clientId:clientId,
+        clientSecret:clientSecret
+      }
+      const sdk = new SocialLogin(params, whiteLabel);
+      await sdk.init(network);
       sdk.showWallet();
       setSocialLoginSDK(sdk);
       setLoading(false);
