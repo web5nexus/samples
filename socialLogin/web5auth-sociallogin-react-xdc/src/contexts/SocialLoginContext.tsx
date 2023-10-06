@@ -91,15 +91,14 @@ export const Web3AuthProvider = ({ children }: any) => {
           socialLoginSDK.provider
         );
         const blockchain:BlockchainType ={
-          blockchain:"binance",
+          blockchain:"xinfin",
           network:"mainnet"
         }
         const xdcInstance = new EvmRpc(socialLoginSDK.provider,blockchain)
         const address = await xdcInstance.getAccounts();
         const chainId = await xdcInstance.getChainId();
         const wallet = await xdcInstance.getWalletInstance();
-        const provider = await xdcInstance.getPrivateKey();
-
+        const provider = await xdcInstance.getProvider();
         setWeb3State({
           provider: socialLoginSDK.provider,
           web3Provider: web3Provider,
